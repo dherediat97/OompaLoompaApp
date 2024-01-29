@@ -1,9 +1,13 @@
 package com.dherediat97.oompaloompaapp.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class OompaLoompa(
     val id: Int,
-    val first_name: String,
-    val last_name: String,
+    @SerializedName("first_name")
+    val firstName: String,
+    @SerializedName("last_name")
+    val lastName: String,
     val song: String,
     val gender: String,
     val image: String,
