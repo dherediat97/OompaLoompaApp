@@ -67,5 +67,15 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    //Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    //Retrofit Converter GSON
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    //OK HTTP Logging Interecptor(More info in the api requests)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    //KOIN Android Core
+    implementation("io.insert-koin:koin-android:3.5.3")
+    //KOIN FOR COMPOSE
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
 }

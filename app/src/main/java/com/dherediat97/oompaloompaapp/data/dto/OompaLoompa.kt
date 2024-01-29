@@ -1,6 +1,6 @@
 package com.dherediat97.oompaloompaapp.data.dto
 
-class OompaLoompa(
+data class OompaLoompa(
     val id: Int,
     val first_name: String,
     val last_name: String,

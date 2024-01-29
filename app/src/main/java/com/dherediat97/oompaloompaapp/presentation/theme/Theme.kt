@@ -1,4 +1,4 @@
-package com.dherediat97.oompaloompaapp.ui.theme
+package com.dherediat97.oompaloompaapp.presentation.theme
 
 import android.app.Activity
 import android.os.Build
