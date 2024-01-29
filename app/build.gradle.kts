@@ -50,8 +50,9 @@ android {
 }
 
 dependencies {
-
+    //Android Core KTX
     implementation("androidx.core:core-ktx:1.12.0")
+    //Android Lifecycle Runtime KTX
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2024.01.00"))
@@ -70,6 +71,9 @@ dependencies {
     //Compose Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
+    //Compose Material Icons Extended
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
+
     //Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     //Retrofit Converter GSON
@@ -83,7 +87,7 @@ dependencies {
     //KOIN FOR COMPOSE
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
 
-    //KOIL
+    //COIL COMPOSE
     implementation("io.coil-kt:coil-compose:2.5.0")
 
     //Lottie

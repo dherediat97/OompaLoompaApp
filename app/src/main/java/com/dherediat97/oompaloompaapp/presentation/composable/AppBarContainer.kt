@@ -28,7 +28,9 @@ fun AppBarContainer(content: @Composable (PaddingValues) -> Unit) {
             TopAppBar(
                 modifier = Modifier.fillMaxWidth(),
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+
+                    }) {
                         Icon(
                             painter = rememberVectorPainter(image = Icons.Default.Search),
                             contentDescription = "search icon",

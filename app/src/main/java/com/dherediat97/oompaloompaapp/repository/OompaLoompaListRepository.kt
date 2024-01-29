@@ -22,7 +22,6 @@ class OompaLoompaListRepositoryImpl(private val oompaLoompaService: OompaLoompaS
      * Fetch using the API REST and return to the View Model
      */
     override suspend fun fetchAllOompaLoompa(): ResponseGetAllOompaLoompa {
-        val allWorkers = oompaLoompaService.fetchAllWorkers()
-        return allWorkers
+        return oompaLoompaService.fetchAllWorkers()
     }
 }
