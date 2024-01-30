@@ -70,7 +70,14 @@ fun OompaLoompaDetail(
         }
     }
 
-    if (data.isLoading) CircularProgressIndicator()
+    if (data.isLoading)
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimaryContainer)
+        }
 
     val oompaLoompa = data.oompaLoompaWorker
 
