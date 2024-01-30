@@ -11,14 +11,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
 import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaListViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -26,26 +32,43 @@ import org.koin.androidx.compose.koinViewModel
  * The Oompa Loompa List, in this case is grid, for the user is better display in
  * grid layout than column layout
  */
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun OompaLoompaList(
     innerPadding: PaddingValues,
     oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
     onNavigateOompaLoompa: (Int) -> Unit,
 ) {
+    val connection by connectivityState()
+
+    val isConnected = connection === ConnectionState.Available
+
     val data by oompaLoompaListViewModel.oompaLoompaUiState.collectAsState()
 
-    //Each open execute the view model function to fetch all Oompa Loompa
-    LaunchedEffect(Unit) {
-        oompaLoompaListViewModel.fetchAllWorkers()
+    //Present a loading while
+    if (data.isLoading) LoadingView()
+
+    val lazyGridState = rememberLazyGridState()
+
+    //Solution to check the end of the list
+    val isAtBottom by remember {
+        derivedStateOf {
+            val layoutInfo = lazyGridState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+            visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
+        }
     }
 
-    //Present a loading while
-    if (data.isLoading)
-        LoadingView()
 
+    if (isConnected) {
+        //Each time the user reach the bottom of the list, fetch results of the next page
+        LaunchedEffect(isAtBottom) {
+            oompaLoompaListViewModel.fetchAllWorkers()
+        }
+    }
     //When there are data build a list view
     LazyVerticalGrid(
+        state = lazyGridState,
         modifier = Modifier
             .padding(
                 top = innerPadding.calculateTopPadding(),

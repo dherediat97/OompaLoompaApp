@@ -14,6 +14,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import com.dherediat97.oompaloompaapp.data.dto.OompaLoompa
 
@@ -33,9 +35,8 @@ fun OompaLoompaCard(oompaLoompa: OompaLoompa) {
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(oompaLoompa.image)
                     .crossfade(true)
-                    .size(500, 200)
                     .build(),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 contentDescription = "oompa loompa image"
             )
             Text("${oompaLoompa.firstName} ${oompaLoompa.lastName}")

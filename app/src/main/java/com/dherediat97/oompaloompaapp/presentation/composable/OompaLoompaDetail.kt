@@ -35,23 +35,32 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
 import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaDetailViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun OompaLoompaDetail(
     innerPadding: PaddingValues,
     oompaLoompaId: Int,
     viewModel: OompaLoompaDetailViewModel = koinViewModel(),
 ) {
-    println(oompaLoompaId)
-
     val data by viewModel.singleOompaLoompaUiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.fetchSingleOompaLoompa(oompaLoompaId)
+    val connection by connectivityState()
+
+    val isConnected = connection === ConnectionState.Available
+
+
+    if (isConnected) {
+        LaunchedEffect(Unit) {
+            viewModel.fetchSingleOompaLoompa(oompaLoompaId)
+        }
     }
 
     if (data.isLoading)

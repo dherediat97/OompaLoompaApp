@@ -39,14 +39,17 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
                     isLoading = true
                 )
             }
-            val responseGetAllOompaLoompa = repository.fetchAllOompaLoompa()
+            val responseGetAllOompaLoompa =
+                repository.fetchAllOompaLoompa(page = oompaLoompaUiState.value.page)
+
             if (responseGetAllOompaLoompa.results.isNotEmpty()) {
                 _oompaLoompaUiState.update {
                     it.copy(
-                        oompaLoompaList = responseGetAllOompaLoompa.results,
-                        isLoading = false
+                        page = oompaLoompaUiState.value.page,
+                        oompaLoompaList = oompaLoompaUiState.value.oompaLoompaList + responseGetAllOompaLoompa.results
                     )
                 }
+                oompaLoompaUiState.value.page++
             }
         }.onFailure { error ->
             e("fetchAllWorkers", "onFailure", error)
@@ -81,6 +84,7 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
      */
     data class OompaLoompaUiState(
         val oompaLoompaList: List<OompaLoompa> = mutableListOf(),
+        var page: Int = 1,
         val isLoading: Boolean = false,
         val error: String = ""
     )
