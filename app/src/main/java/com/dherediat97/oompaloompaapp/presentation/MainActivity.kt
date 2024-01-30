@@ -8,7 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.dherediat97.oompaloompaapp.presentation.composable.AppBarContainer
+import com.dherediat97.oompaloompaapp.presentation.composable.OompaLoompaDetail
 import com.dherediat97.oompaloompaapp.presentation.composable.OompaLoompaList
 import com.dherediat97.oompaloompaapp.presentation.theme.OompaLoompaAppTheme
 
@@ -24,9 +30,31 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppBarContainer { paddingValues ->
-                        OompaLoompaList(paddingValues)
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "main") {
+                        composable("main") {
+                            AppBarContainer { paddingValues ->
+                                OompaLoompaList(paddingValues) {oompaLoompaId->
+                                    navController.navigate("oompaLoompa/$oompaLoompaId")
+                                }
+                            }
+                        }
+                        composable(
+                            "oompaLoompa/{id}",
+                            arguments = listOf(navArgument("id") {
+                                type = NavType.IntType
+                            })
+                        ) { backStackEntry ->
+                            AppBarContainer { paddingValues ->
+                                OompaLoompaDetail(
+                                    paddingValues,
+                                    backStackEntry.arguments?.getInt("id")!!
+                                )
+                            }
+                        }
                     }
+
+
                 }
             }
         }

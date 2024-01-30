@@ -74,6 +74,9 @@ dependencies {
     //Compose Material Icons Extended
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
+    //Compose Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+
     //Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     //Retrofit Converter GSON

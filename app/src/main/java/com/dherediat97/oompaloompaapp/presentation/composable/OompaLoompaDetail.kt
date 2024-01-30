@@ -2,7 +2,10 @@ package com.dherediat97.oompaloompaapp.presentation.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,67 +22,90 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.dherediat97.oompaloompaapp.data.dto.Favorite
-import com.dherediat97.oompaloompaapp.data.dto.OompaLoompa
+import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaDetailViewModel
+import org.koin.androidx.compose.koinViewModel
+import java.util.Locale
 
-
-val mockOompaLoompa = OompaLoompa(
-    id = 1,
-    firstName = "Marcy",
-    lastName = "Karadzas",
-    image = "https://s3.eu-central-1.amazonaws.com/napptilus/level-test/1.jpg",
-    profession = "Developer",
-    email = "",
-    age = 21,
-    country = "Loompalandia",
-    height = 99,
-    gender = "F",
-    favorite = Favorite("white", "fried chips", "")
-)
 
 @Composable
-@Preview
-fun OompaLoompaDetail() {
-    val data = mockOompaLoompa
+fun OompaLoompaDetail(
+    innerPadding: PaddingValues,
+    oompaLoompaId: Int,
+    viewModel: OompaLoompaDetailViewModel = koinViewModel(),
+) {
+    println(oompaLoompaId)
 
-    Column(modifier = Modifier
-        .fillMaxSize()) {
-        AsyncImage(
-            model = data.image,
-            contentDescription = "oompa loompa image",
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            "${data.firstName} ${data.lastName}",
-            modifier = Modifier.padding(8.dp).fillMaxWidth(),
-            fontSize = 32.sp,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondary
-        )
+    val data by viewModel.singleOompaLoompaUiState.collectAsState()
 
-        OompaLoompaDetailBox(
-            if (data.gender == "m") Icons.Default.Male else Icons.Default.Female,
-            "Gender",
-            if (data.gender == "m") "Male" else "Female"
-        )
+    LaunchedEffect(Unit) {
+        viewModel.fetchSingleOompaLoompa(oompaLoompaId)
+    }
+
+    if (data.isLoading)
+        LoadingView()
 
 
-        OompaLoompaDetailBox(Icons.Default.Map, "Country", data.country)
-        OompaLoompaDetailBox(Icons.Default.CalendarMonth, "Age", data.age.toString())
-        OompaLoompaDetailBox(Icons.Default.ColorLens, "Favourite Color", data.favorite.color)
-        OompaLoompaDetailBox(Icons.Default.Fastfood, "Favourite Food", data.favorite.food)
-        OompaLoompaDetailBox(Icons.Default.Factory, "Profession", data.profession)
+    val oompaLoompa = data.oompaLoompa
+    if (oompaLoompa != null) {
+        Column(
+            modifier = Modifier
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
+                    start = innerPadding.calculateStartPadding(LayoutDirection.Ltr)
+                )
+                .fillMaxSize()
+        ) {
+            AsyncImage(
+                model = oompaLoompa.image,
+                contentDescription = "oompa loompa image",
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                "${oompaLoompa.firstName} ${oompaLoompa.lastName}",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+            OompaLoompaDetailBox(
+                if (oompaLoompa.gender == "m") Icons.Default.Male else Icons.Default.Female,
+                "Gender",
+                if (oompaLoompa.gender == "m") "Male" else "Female"
+            )
+
+
+            OompaLoompaDetailBox(Icons.Default.Map, "Country", oompaLoompa.country)
+            OompaLoompaDetailBox(Icons.Default.CalendarMonth, "Age", oompaLoompa.age.toString())
+            OompaLoompaDetailBox(
+                Icons.Default.ColorLens,
+                "Favourite Color",
+                oompaLoompa.favorite.color
+            )
+            OompaLoompaDetailBox(
+                Icons.Default.Fastfood,
+                "Favourite Food",
+                oompaLoompa.favorite.food
+            )
+            OompaLoompaDetailBox(Icons.Default.Factory, "Profession", oompaLoompa.profession)
+        }
     }
 }
 
@@ -113,7 +139,7 @@ fun OompaLoompaDetailBox(
             fontWeight = FontWeight.Bold
         )
         Text(
-            oompaLoompaValue.capitalize(),
+            oompaLoompaValue.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
             fontSize = 16.sp,
             textAlign = TextAlign.Center
         )

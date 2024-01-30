@@ -1,6 +1,7 @@
 package com.dherediat97.oompaloompaapp.presentation.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -29,7 +30,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun OompaLoompaList(
     innerPadding: PaddingValues,
-    oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel()
+    oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
+    onNavigateOompaLoompa: (Int) -> Unit,
 ) {
     val data by oompaLoompaListViewModel.oompaLoompaUiState.collectAsState()
 
@@ -55,7 +57,10 @@ fun OompaLoompaList(
         columns = GridCells.Fixed(2),
     ) {
         items(data.oompaLoompaList, itemContent = { oompaLoompa ->
-            Row(Modifier.animateItemPlacement()) {
+            Row(
+                Modifier
+                    .animateItemPlacement()
+                    .clickable { onNavigateOompaLoompa(oompaLoompa.id) }) {
                 OompaLoompaCard(oompaLoompa)
             }
         })
