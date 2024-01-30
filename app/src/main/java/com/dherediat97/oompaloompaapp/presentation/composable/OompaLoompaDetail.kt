@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -21,7 +22,7 @@ import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Male
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,20 +31,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.domain.dto.Gender
 import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
-import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaDetailViewModel
+import com.dherediat97.oompaloompaapp.presentation.viewmodel.detail.OompaLoompaDetailViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
-import java.util.Locale
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -51,9 +52,9 @@ import java.util.Locale
 fun OompaLoompaDetail(
     innerPadding: PaddingValues,
     oompaLoompaId: Int,
-    viewModel: OompaLoompaDetailViewModel = koinViewModel(),
+    oompaLoompaDetailViewModel: OompaLoompaDetailViewModel = koinViewModel(),
 ) {
-    val data by viewModel.singleOompaLoompaUiState.collectAsState()
+    val data by oompaLoompaDetailViewModel.singleOompaLoompaUiState.collectAsState()
 
     val connection by connectivityState()
 
@@ -61,12 +62,15 @@ fun OompaLoompaDetail(
 
     if (isConnected) {
         LaunchedEffect(Unit) {
-            viewModel.fetchSingleOompaLoompa(oompaLoompaId)
+            oompaLoompaDetailViewModel.fetchSingleOompaLoompa(oompaLoompaId)
         }
-    } else ErrorView()
+    } else {
+        ErrorView(innerPadding) {
+            oompaLoompaDetailViewModel.fetchSingleOompaLoompa(oompaLoompaId)
+        }
+    }
 
-    if (data.isLoading)
-        LoadingView()
+    if (data.isLoading) CircularProgressIndicator()
 
     val oompaLoompa = data.oompaLoompaWorker
 
@@ -80,30 +84,42 @@ fun OompaLoompaDetail(
                 )
                 .fillMaxSize()
         ) {
-            AsyncImage(
-                model = oompaLoompa.image,
-                contentDescription = "oompa loompa image",
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                "${oompaLoompa.firstName} ${oompaLoompa.lastName}",
+            Row(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                fontSize = 32.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.secondary
-            )
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 8.dp, end = 8.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = oompaLoompa.image,
+                    contentDescription = "oompa loompa image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape),
+                )
+                Text(
+                    "${oompaLoompa.firstName} ${oompaLoompa.lastName}",
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .fillMaxWidth(),
+                    fontSize = 30.sp,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .weight(1f, fill = false)
             ) {
                 OompaLoompaDetailBox(
-                    if (oompaLoompa.gender == "m") Icons.Default.Male else Icons.Default.Female,
+                    if (oompaLoompa.gender == Gender.M) Icons.Default.Male else Icons.Default.Female,
                     "Gender",
-                    if (oompaLoompa.gender == "m") "Male" else "Female"
+                    oompaLoompa.gender.value
                 )
                 OompaLoompaDetailBox(
                     Icons.Default.Map,
@@ -138,42 +154,4 @@ fun OompaLoompaDetail(
             }
         }
     }
-}
-
-@Composable
-fun OompaLoompaDetailBox(
-    oompaLoompaKey: ImageVector,
-    oompaLoompaLabel: String,
-    oompaLoompaValue: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .padding(6.dp),
-    ) {
-        Icon(
-            painter = rememberVectorPainter(
-                image = oompaLoompaKey
-            ),
-            contentDescription = "oompa loompa icon",
-            modifier = Modifier
-                .size(40.dp, 40.dp)
-                .padding(end = 12.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            text = "$oompaLoompaLabel: ",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            oompaLoompaValue.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
-            fontSize = 16.sp,
-            textAlign = TextAlign.Center
-        )
-    }
-
 }

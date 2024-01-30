@@ -1,10 +1,10 @@
-package com.dherediat97.oompaloompaapp.presentation.viewmodel
+package com.dherediat97.oompaloompaapp.presentation.viewmodel.list
 
 import android.util.Log.e
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dherediat97.oompaloompaapp.data.dto.OompaLoompa
-import com.dherediat97.oompaloompaapp.repository.OompaLoompaListRepository
+import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
+import com.dherediat97.oompaloompaapp.domain.repository.OompaLoompaListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,7 +56,7 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
             _oompaLoompaUiState.update {
                 it.copy(
                     oompaLoompaList = mutableListOf(),
-                    error = "Se ha encontrado un error"
+                    hasError = true
                 )
             }
         }
@@ -73,7 +73,7 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
             it.copy(
                 oompaLoompaList = mutableListOf(),
                 isLoading = false,
-                error = ""
+                hasError = false
             )
         }
     }
@@ -86,6 +86,6 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
         val oompaLoompaList: List<OompaLoompa> = mutableListOf(),
         var page: Int = 1,
         val isLoading: Boolean = false,
-        val error: String = ""
+        val hasError: Boolean = false
     )
 }

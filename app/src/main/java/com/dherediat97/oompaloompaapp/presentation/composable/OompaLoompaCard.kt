@@ -12,12 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
 import coil.request.ImageRequest
-import com.dherediat97.oompaloompaapp.data.dto.OompaLoompa
+import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
 
 @Composable
 fun OompaLoompaCard(oompaLoompa: OompaLoompa) {
@@ -30,16 +29,22 @@ fun OompaLoompaCard(oompaLoompa: OompaLoompa) {
             .padding(8.dp)
             .fillMaxWidth()
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(oompaLoompa.image)
                     .crossfade(true)
                     .build(),
-                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.FillWidth,
                 contentDescription = "oompa loompa image"
             )
-            Text("${oompaLoompa.firstName} ${oompaLoompa.lastName}")
+            Text(
+                "${oompaLoompa.firstName} ${oompaLoompa.lastName}",
+                textAlign = TextAlign.Center
+            )
         }
 
     }

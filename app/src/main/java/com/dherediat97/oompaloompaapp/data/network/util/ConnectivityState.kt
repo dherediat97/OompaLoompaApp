@@ -1,11 +1,11 @@
-package com.dherediat97.oompaloompaapp.util
+package com.dherediat97.oompaloompaapp.data.network.util
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow

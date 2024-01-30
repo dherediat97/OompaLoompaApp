@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
-import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
-import com.dherediat97.oompaloompaapp.util.currentConnectivityState
-import com.dherediat97.oompaloompaapp.util.observeConnectivityAsFlow
+import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.data.network.util.currentConnectivityState
+import com.dherediat97.oompaloompaapp.data.network.util.observeConnectivityAsFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi

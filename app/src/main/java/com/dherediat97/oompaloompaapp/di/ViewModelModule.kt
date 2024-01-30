@@ -1,7 +1,7 @@
 package com.dherediat97.oompaloompaapp.di
 
-import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaDetailViewModel
-import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaListViewModel
+import com.dherediat97.oompaloompaapp.presentation.viewmodel.detail.OompaLoompaDetailViewModel
+import com.dherediat97.oompaloompaapp.presentation.viewmodel.list.OompaLoompaListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

@@ -1,10 +1,10 @@
-package com.dherediat97.oompaloompaapp.presentation.viewmodel
+package com.dherediat97.oompaloompaapp.presentation.viewmodel.detail
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dherediat97.oompaloompaapp.data.dto.OompaLoompa
-import com.dherediat97.oompaloompaapp.repository.OompaLoompaDetailRepository
+import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
+import com.dherediat97.oompaloompaapp.domain.repository.OompaLoompaDetailRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,6 +1,6 @@
 package com.dherediat97.oompaloompaapp.di
 
-import com.dherediat97.oompaloompaapp.service.OompaLoompaService
+import com.dherediat97.oompaloompaapp.data.network.OompaLoompaService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,9 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
 import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
-import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaListViewModel
+import com.dherediat97.oompaloompaapp.presentation.viewmodel.list.OompaLoompaListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
 
@@ -39,14 +40,17 @@ fun OompaLoompaList(
     oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
     onNavigateOompaLoompa: (Int) -> Unit,
 ) {
+    //Connectivity State
     val connection by connectivityState()
-
+    //Boolean flag that control in real time the connection state
     val isConnected = connection === ConnectionState.Available
 
+    //UiState of view model
     val data by oompaLoompaListViewModel.oompaLoompaUiState.collectAsState()
 
     //Present a loading while
-    if (data.isLoading) LoadingView()
+    if (data.isLoading) CircularProgressIndicator()
+    if (data.hasError) ErrorView(innerPadding = innerPadding) { oompaLoompaListViewModel.fetchAllWorkers() }
 
     val lazyGridState = rememberLazyGridState()
 
@@ -65,7 +69,11 @@ fun OompaLoompaList(
         LaunchedEffect(isAtBottom) {
             oompaLoompaListViewModel.fetchAllWorkers()
         }
-    } else ErrorView()
+    } else {
+        ErrorView(innerPadding) {
+            oompaLoompaListViewModel.fetchAllWorkers()
+        }
+    }
     //When there are data build a list view
     LazyVerticalGrid(
         state = lazyGridState,

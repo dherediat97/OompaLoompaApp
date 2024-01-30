@@ -1,9 +1,9 @@
-package com.dherediat97.oompaloompaapp.util
+package com.dherediat97.oompaloompaapp.data.network.util
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
 
 /**
  * Network utility to get current state of internet connection

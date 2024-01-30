@@ -1,8 +1,7 @@
-package com.dherediat97.oompaloompaapp.repository
+package com.dherediat97.oompaloompaapp.domain.repository
 
-import com.dherediat97.oompaloompaapp.data.dto.OompaLoompa
-import com.dherediat97.oompaloompaapp.data.dto.ResponseGetAllOompaLoompa
-import com.dherediat97.oompaloompaapp.service.OompaLoompaService
+import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
+import com.dherediat97.oompaloompaapp.data.network.OompaLoompaService
 
 
 /**

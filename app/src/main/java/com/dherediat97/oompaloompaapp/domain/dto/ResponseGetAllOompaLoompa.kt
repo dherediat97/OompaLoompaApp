@@ -1,4 +1,4 @@
-package com.dherediat97.oompaloompaapp.data.dto
+package com.dherediat97.oompaloompaapp.domain.dto
 
 data class ResponseGetAllOompaLoompa(
     val current: Int,
