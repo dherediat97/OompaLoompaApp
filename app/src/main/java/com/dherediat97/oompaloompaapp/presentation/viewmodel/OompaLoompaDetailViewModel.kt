@@ -41,7 +41,7 @@ class OompaLoompaDetailViewModel(private val repository: OompaLoompaDetailReposi
             if (responseGetSingleOompaLoompa != null) {
                 _singleOompaLoompaUiState.update {
                     it.copy(
-                        oompaLoompa = responseGetSingleOompaLoompa,
+                        oompaLoompaWorker = responseGetSingleOompaLoompa,
                         isLoading = false
                     )
                 }
@@ -50,7 +50,7 @@ class OompaLoompaDetailViewModel(private val repository: OompaLoompaDetailReposi
             Log.e("fetchAllWorkers", "onFailure", error)
             _singleOompaLoompaUiState.update {
                 it.copy(
-                    oompaLoompa = null,
+                    oompaLoompaWorker = null,
                     error = "Se ha encontrado un error"
                 )
             }
@@ -66,7 +66,7 @@ class OompaLoompaDetailViewModel(private val repository: OompaLoompaDetailReposi
     private fun resetOompaLoompaUiState() {
         _singleOompaLoompaUiState.update {
             it.copy(
-                oompaLoompa = null,
+                oompaLoompaWorker = null,
                 isLoading = false,
                 error = ""
             )
@@ -78,7 +78,7 @@ class OompaLoompaDetailViewModel(private val repository: OompaLoompaDetailReposi
      * Main UiState that contains Oompa Loompa object and control variables
      */
     data class SingleOompaLoompaUiState(
-        val oompaLoompa: OompaLoompa? = null,
+        val oompaLoompaWorker: OompaLoompa? = null,
         val isLoading: Boolean = false,
         val error: String = ""
     )

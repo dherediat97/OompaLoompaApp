@@ -30,19 +30,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColor
 import coil.compose.AsyncImage
 import com.dherediat97.oompaloompaapp.data.dto.ConnectionState
-import com.dherediat97.oompaloompaapp.data.dto.OompaLoompa
 import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
 import com.dherediat97.oompaloompaapp.presentation.viewmodel.OompaLoompaDetailViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,7 +68,7 @@ fun OompaLoompaDetail(
     if (data.isLoading)
         LoadingView()
 
-    val oompaLoompa = data.oompaLoompa
+    val oompaLoompa = data.oompaLoompaWorker
 
     if (oompaLoompa != null) {
         Column(
@@ -104,50 +100,41 @@ fun OompaLoompaDetail(
                     .verticalScroll(rememberScrollState())
                     .weight(1f, fill = false)
             ) {
-                with(oompaLoompa.favorite.color) {
-                    OompaLoompaDetailBox(
-                        if (oompaLoompa.gender == "m") Icons.Default.Male else Icons.Default.Female,
-                        "Gender",
-                        if (oompaLoompa.gender == "m") "Male" else "Female",
-                        this@with
-                    )
-                    OompaLoompaDetailBox(
-                        Icons.Default.Map,
-                        "Country",
-                        oompaLoompa.country,
-                        this@with
-                    )
-                    OompaLoompaDetailBox(
-                        Icons.Default.Height,
-                        "Height",
-                        "${oompaLoompa.height} cm",
-                        this@with
-                    )
-                    OompaLoompaDetailBox(
-                        Icons.Default.CalendarMonth,
-                        "Age",
-                        "${oompaLoompa.age} years",
-                        this@with
-                    )
-                    OompaLoompaDetailBox(
-                        Icons.Default.ColorLens,
-                        "Favourite Color",
-                        oompaLoompa.favorite.color,
-                        this@with
-                    )
-                    OompaLoompaDetailBox(
-                        Icons.Default.Fastfood,
-                        "Favourite Food",
-                        oompaLoompa.favorite.food,
-                        this@with
-                    )
-                    OompaLoompaDetailBox(
-                        Icons.Default.Factory,
-                        "Profession",
-                        oompaLoompa.profession,
-                        this@with
-                    )
-                }
+                OompaLoompaDetailBox(
+                    if (oompaLoompa.gender == "m") Icons.Default.Male else Icons.Default.Female,
+                    "Gender",
+                    if (oompaLoompa.gender == "m") "Male" else "Female"
+                )
+                OompaLoompaDetailBox(
+                    Icons.Default.Map,
+                    "Country",
+                    oompaLoompa.country
+                )
+                OompaLoompaDetailBox(
+                    Icons.Default.Height,
+                    "Height",
+                    "${oompaLoompa.height} cm"
+                )
+                OompaLoompaDetailBox(
+                    Icons.Default.CalendarMonth,
+                    "Age",
+                    "${oompaLoompa.age} years"
+                )
+                OompaLoompaDetailBox(
+                    Icons.Default.ColorLens,
+                    "Favourite Color",
+                    oompaLoompa.favorite.color
+                )
+                OompaLoompaDetailBox(
+                    Icons.Default.Fastfood,
+                    "Favourite Food",
+                    oompaLoompa.favorite.food
+                )
+                OompaLoompaDetailBox(
+                    Icons.Default.Factory,
+                    "Profession",
+                    oompaLoompa.profession
+                )
             }
         }
     }
@@ -157,18 +144,8 @@ fun OompaLoompaDetail(
 fun OompaLoompaDetailBox(
     oompaLoompaKey: ImageVector,
     oompaLoompaLabel: String,
-    oompaLoompaValue: String,
-    oompaLoompaColor: String,
+    oompaLoompaValue: String
 ) {
-    var oompaLoompaCustomIconColor: Color
-    val colorId: Int = LocalContext.current.resources.getIdentifier(
-        oompaLoompaColor,
-        "color",
-        LocalContext.current.packageName
-    )
-    val desiredColor: Int = LocalContext.current.resources.getColor(colorId)
-    oompaLoompaCustomIconColor = Color(desiredColor)
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -185,7 +162,7 @@ fun OompaLoompaDetailBox(
             modifier = Modifier
                 .size(40.dp, 40.dp)
                 .padding(end = 12.dp),
-            tint = oompaLoompaCustomIconColor
+            tint = MaterialTheme.colorScheme.primary
         )
         Text(
             text = "$oompaLoompaLabel: ",

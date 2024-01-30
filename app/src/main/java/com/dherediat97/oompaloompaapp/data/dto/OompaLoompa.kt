@@ -11,7 +11,7 @@ data class OompaLoompa(
     val gender: String,
     val image: String,
     val profession: String,
-    val description: String = "",
+//    val description: String = "",
     val email: String,
     val age: Int,
     val country: String,

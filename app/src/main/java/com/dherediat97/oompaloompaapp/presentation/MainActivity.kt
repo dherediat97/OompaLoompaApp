@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dherediat97.oompaloompaapp.presentation.composable.AppBarContainer
+import com.dherediat97.oompaloompaapp.presentation.composable.FilterButton
 import com.dherediat97.oompaloompaapp.presentation.composable.OompaLoompaDetail
 import com.dherediat97.oompaloompaapp.presentation.composable.OompaLoompaList
 import com.dherediat97.oompaloompaapp.presentation.theme.OompaLoompaAppTheme
@@ -41,11 +42,14 @@ class MainActivity : ComponentActivity() {
                         startDestination = "main",
                     ) {
                         composable("main") {
-                            AppBarContainer(backButton = {}, content = { paddingValues ->
-                                OompaLoompaList(paddingValues) { oompaLoompaId ->
-                                    navController.navigate("oompaLoompa/$oompaLoompaId")
-                                }
-                            })
+                            AppBarContainer(
+                                backButton = {},
+                                withFilters = { FilterButton() },
+                                content = { paddingValues ->
+                                    OompaLoompaList(paddingValues) { oompaLoompaId ->
+                                        navController.navigate("oompaLoompa/$oompaLoompaId")
+                                    }
+                                })
                         }
 
                         //Composable of Detail Oompa Loompa Worker
@@ -65,7 +69,7 @@ class MainActivity : ComponentActivity() {
                                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                 }
-                            }, content = { paddingValues ->
+                            }, withFilters = {}, content = { paddingValues ->
                                 OompaLoompaDetail(
                                     paddingValues,
                                     backStackEntry.arguments?.getInt("id")!!

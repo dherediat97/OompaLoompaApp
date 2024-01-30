@@ -15,16 +15,20 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.stringResource
+import com.dherediat97.oompaloompaapp.R
 
 
 /**
  * App Bar that have the actions to filter or search the list
+ * and the content of the screen(the list of oompa loompa or the detail)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarContainer(
     content: @Composable (PaddingValues) -> Unit,
-    backButton: @Composable () -> Unit
+    backButton: @Composable () -> Unit,
+    withFilters: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -32,22 +36,14 @@ fun AppBarContainer(
                 modifier = Modifier.fillMaxWidth(),
                 navigationIcon = { backButton() },
                 actions = {
-                    IconButton(onClick = {
-
-                    }) {
-                        Icon(
-                            painter = rememberVectorPainter(image = Icons.Default.Search),
-                            contentDescription = "search icon",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    withFilters()
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 ),
                 title = {
-                    Text("Oompa Loompa")
+                    Text(stringResource(id = R.string.app_name))
                 }
             )
         },
