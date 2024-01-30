@@ -17,6 +17,6 @@ fun LoadingView() {
 
     LottieAnimation(
         composition = composition,
-        progress = { progress },
+        progress = { progress }
     )
 }

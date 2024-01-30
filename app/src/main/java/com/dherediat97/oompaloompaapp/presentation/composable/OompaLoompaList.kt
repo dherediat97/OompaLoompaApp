@@ -65,7 +65,7 @@ fun OompaLoompaList(
         LaunchedEffect(isAtBottom) {
             oompaLoompaListViewModel.fetchAllWorkers()
         }
-    }
+    } else ErrorView()
     //When there are data build a list view
     LazyVerticalGrid(
         state = lazyGridState,

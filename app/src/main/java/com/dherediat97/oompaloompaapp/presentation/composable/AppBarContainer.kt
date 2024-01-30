@@ -22,11 +22,15 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBarContainer(content: @Composable (PaddingValues) -> Unit) {
+fun AppBarContainer(
+    content: @Composable (PaddingValues) -> Unit,
+    backButton: @Composable () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.fillMaxWidth(),
+                navigationIcon = { backButton() },
                 actions = {
                     IconButton(onClick = {
 
