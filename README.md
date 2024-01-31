@@ -27,7 +27,11 @@
     </ul>
 </details>
 
-![](product-screenshot | width = 500)
+<p  align="center">
+  <img src="product_screenshot_list.png" width="200">
+  <img src="product_screenshot_detail.png" width="200">
+</p>
+
 
 ### Built With
 * ![Android][Android]
@@ -39,7 +43,6 @@
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[product-screenshot]: product_screenshot.png
 [Android]: https://img.shields.io/badge/Android-0769AD?style=for-the-badge&logo=android&logoColor=white
 [Kotlin]: https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white
 [Gradle]: https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white
