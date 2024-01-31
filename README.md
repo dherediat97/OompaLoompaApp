@@ -28,8 +28,9 @@
 </details>
 
 <p  align="center">
-  <img src="product_screenshot_list.png" width="200">
-  <img src="product_screenshot_detail.png" width="200">
+  <img src="product_screenshot_list.png" width="200"/>
+  <img src="product_screenshot_detail.png" width="200"/>
+  <img src="product_screenshot_filter.png" width="200"/>
 </p>
 
 

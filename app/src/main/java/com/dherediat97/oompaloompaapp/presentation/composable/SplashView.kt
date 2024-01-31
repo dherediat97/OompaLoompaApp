@@ -27,7 +27,7 @@ fun SplashView(modifier: Modifier, isAnimationFinished: () -> Unit) {
     )
 
     LaunchedEffect(Unit) {
-        delay(2400)
+        delay(2200)
         isAnimationFinished()
     }
 

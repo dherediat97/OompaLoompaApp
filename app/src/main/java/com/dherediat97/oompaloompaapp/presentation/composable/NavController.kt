@@ -34,10 +34,9 @@ import com.dherediat97.oompaloompaapp.presentation.viewmodel.list.OompaLoompaLis
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MyNavHost() {
-
-
+fun MyNavHost(oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel()) {
     val navController = rememberNavController()
+
     NavHost(
         navController = navController,
         startDestination = "splash",
@@ -77,8 +76,10 @@ fun MyNavHost() {
             },
         ) {
             Scaffold { innerPadding ->
-                SearchBarFilterOompaLoompa(content = { oompaLoompaList ->
-                    OompaLoompaList(innerPadding, dataList = oompaLoompaList) { oompaLoompaId ->
+                SearchBarFilterOompaLoompa(onClearFilters = {
+                    oompaLoompaListViewModel.resetOompaLoompaUiState()
+                }, content = {
+                    OompaLoompaList(innerPadding) { oompaLoompaId ->
                         navController.navigate("oompaLoompa/$oompaLoompaId")
                     }
                 })

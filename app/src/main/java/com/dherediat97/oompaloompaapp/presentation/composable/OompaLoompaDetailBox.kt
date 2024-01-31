@@ -29,23 +29,21 @@ fun OompaLoompaDetailBox(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .padding(6.dp)
+            .padding(start = 16.dp, bottom = 8.dp, top = 8.dp)
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(4.dp),
     ) {
         Icon(
             painter = rememberVectorPainter(
                 image = oompaLoompaKey
             ),
             contentDescription = "oompa loompa icon",
-            modifier = Modifier
-                .size(40.dp, 40.dp)
-                .padding(end = 12.dp),
+            modifier = Modifier.size(40.dp).padding(end = 10.dp),
             tint = MaterialTheme.colorScheme.primary
         )
         Text(
             text = "$oompaLoompaLabel: ",
-            fontSize = 20.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
