@@ -118,7 +118,6 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
             )
         }
         runCatching {
-
             val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
 
             //Filter using filter fun of gender enum value(female or male) parameter
