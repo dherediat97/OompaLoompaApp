@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,11 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFilter
 import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
 import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
 import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
 import com.dherediat97.oompaloompaapp.presentation.viewmodel.list.OompaLoompaListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -37,7 +39,6 @@ import org.koin.androidx.compose.koinViewModel
 fun OompaLoompaList(
     innerPadding: PaddingValues,
     oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
-    dataList: List<OompaLoompa>,
     onNavigateOompaLoompa: (Int) -> Unit,
 ) {
     //Connectivity State
@@ -63,13 +64,19 @@ fun OompaLoompaList(
             oompaLoompaListViewModel.fetchAllWorkers()
         }
     }
-
-    if (dataList.isEmpty() && isConnected) {
-        //Each time the user reach the bottom of the list, fetch results of the next page
-        LaunchedEffect(isAtBottom) {
+    if (isConnected) {
+        //Each time the user reach this screen
+        LaunchedEffect(data.oompaLoompaList.isEmpty()) {
             oompaLoompaListViewModel.fetchAllWorkers()
         }
+
+        //Each time the user reach the bottom of the list, fetch results of the next page
+        LaunchedEffect(isAtBottom) {
+            delay(100)
+            oompaLoompaListViewModel.fetchAllWorkers(true)
+        }
     }
+
     //When there are data build a list view
     LazyColumn(
         state = lazyGridState,
@@ -81,13 +88,16 @@ fun OompaLoompaList(
             .fillMaxWidth()
             .padding(8.dp),
     ) {
-        items(dataList.distinct(), itemContent = { oompaLoompa ->
-            Row(
-                Modifier
-                    .animateItemPlacement()
-                    .clickable { onNavigateOompaLoompa(oompaLoompa.id) }) {
-                OompaLoompaCard(oompaLoompa)
-            }
-        })
+        itemsIndexed(
+            items = data.oompaLoompaList.distinct(),
+            key = { index: Int, _: OompaLoompa -> index },
+            itemContent = { _, oompaLoompa ->
+                Row(
+                    Modifier
+                        .animateItemPlacement()
+                        .clickable { onNavigateOompaLoompa(oompaLoompa.id) }) {
+                    OompaLoompaCard(oompaLoompa)
+                }
+            })
     }
 }

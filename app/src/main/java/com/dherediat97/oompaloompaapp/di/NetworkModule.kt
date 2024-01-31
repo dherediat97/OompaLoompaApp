@@ -12,9 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 val networkModule = module {
-    factory {
-        provideOkHttpClient(get(), get())
-    }
+    factory { provideOkHttpClient(get(), get()) }
     factory { provideOompaLoompaService(get()) }
     single { provideRetrofit(get()) }
     single { provideCachingInterceptor() }
