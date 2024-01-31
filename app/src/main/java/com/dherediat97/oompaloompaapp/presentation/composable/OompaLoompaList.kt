@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,7 +30,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
+import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
 import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
 import com.dherediat97.oompaloompaapp.presentation.viewmodel.list.OompaLoompaListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 fun OompaLoompaList(
     innerPadding: PaddingValues,
     oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
+    dataList: List<OompaLoompa>,
     onNavigateOompaLoompa: (Int) -> Unit,
 ) {
     //Connectivity State
@@ -53,18 +59,7 @@ fun OompaLoompaList(
     //UiState of view model
     val data by oompaLoompaListViewModel.oompaLoompaUiState.collectAsState()
 
-    if (data.hasError) ErrorView(innerPadding = innerPadding) { oompaLoompaListViewModel.fetchAllWorkers() }
-    //Present a loading while
-    if (data.isLoading) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimaryContainer)
-        }
-    }
-    val lazyGridState = rememberLazyGridState()
+    val lazyGridState = rememberLazyListState()
 
     //Solution to check the end of the list
     val isAtBottom by remember {
@@ -74,32 +69,30 @@ fun OompaLoompaList(
             visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
         }
     }
-
+    if (data.hasError) {
+        ErrorView(innerPadding) {
+            oompaLoompaListViewModel.fetchAllWorkers()
+        }
+    }
 
     if (isConnected) {
         //Each time the user reach the bottom of the list, fetch results of the next page
         LaunchedEffect(isAtBottom) {
             oompaLoompaListViewModel.fetchAllWorkers()
         }
-    } else {
-        ErrorView(innerPadding) {
-            oompaLoompaListViewModel.fetchAllWorkers()
-        }
     }
     //When there are data build a list view
-    LazyVerticalGrid(
+    LazyColumn(
         state = lazyGridState,
         modifier = Modifier
             .padding(
-                top = innerPadding.calculateTopPadding(),
                 end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
                 start = innerPadding.calculateStartPadding(LayoutDirection.Ltr)
             )
             .fillMaxWidth()
             .padding(8.dp),
-        columns = GridCells.Fixed(2),
     ) {
-        items(data.oompaLoompaList, itemContent = { oompaLoompa ->
+        items(dataList.distinct(), itemContent = { oompaLoompa ->
             Row(
                 Modifier
                     .animateItemPlacement()

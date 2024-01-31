@@ -1,6 +1,7 @@
 package com.dherediat97.oompaloompaapp.presentation.viewmodel.list
 
 import android.util.Log.e
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
@@ -67,11 +68,99 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
         }
     }
 
+    /**
+     * Filter by profession if not have result, return original list
+     */
+    fun filterByProfession(professionSearched: String) = viewModelScope.launch(Dispatchers.IO) {
+        _oompaLoompaUiState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+        val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+
+        //Filter using filter fun of profession parameter
+        val oompaLoompaListFiltered = oompaLoompaList.filter {
+            it.profession.contains(
+                professionSearched,
+                true
+            )
+        }
+        //Update State
+        _oompaLoompaUiState.update {
+            it.copy(
+                oompaLoompaListFiltered = oompaLoompaListFiltered
+                    .ifEmpty { oompaLoompaList }.distinct(),
+                isLoading = false
+            )
+        }
+    }
+
+    /**
+     * Filter by gender if any of two possible value(m or f)
+     * have result, return original list
+     */
+    fun filterByGender(genderSearched: String) = viewModelScope.launch(Dispatchers.IO) {
+        _oompaLoompaUiState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+        val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+
+        //Filter using filter fun of gender enum value(female or male) parameter
+        val oompaLoompaListFiltered = oompaLoompaList.filter {
+            it.gender.value.lowercase() == genderSearched.lowercase()
+        }
+        //Update State
+        _oompaLoompaUiState.update {
+            it.copy(
+                oompaLoompaListFiltered = oompaLoompaListFiltered
+                    .ifEmpty { oompaLoompaList }.distinct(),
+                isLoading = false
+            )
+        }
+    }
+
+
+    /**
+     * Filter by name, filter by first name or last name if any of two params
+     * have result, return original list
+     */
+    fun filterByName(nameSearched: String) = viewModelScope.launch(Dispatchers.IO) {
+        _oompaLoompaUiState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+        val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+
+        //Filter using filter fun of first name parameter
+        val oompaLoompaListFilteredByName = oompaLoompaList.filter {
+            it.firstName.contains(nameSearched, true)
+        }
+
+        //Filter using filter fun of last name parameter
+        val oompaLoompaListFilteredByLastName = oompaLoompaList.filter {
+            it.lastName.contains(nameSearched, true)
+        }
+
+        //Update State
+        _oompaLoompaUiState.update {
+            it.copy(
+                oompaLoompaListFiltered =
+                (oompaLoompaListFilteredByName + oompaLoompaListFilteredByLastName)
+                    .ifEmpty { oompaLoompaList }.distinct(),
+                isLoading = false
+            )
+        }
+    }
 
     private fun resetOompaLoompaUiState() {
         _oompaLoompaUiState.update {
             it.copy(
                 oompaLoompaList = mutableListOf(),
+                oompaLoompaListFiltered = mutableListOf(),
                 isLoading = false,
                 hasError = false
             )
@@ -84,6 +173,7 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
      */
     data class OompaLoompaUiState(
         val oompaLoompaList: List<OompaLoompa> = mutableListOf(),
+        val oompaLoompaListFiltered: List<OompaLoompa> = mutableListOf(),
         var page: Int = 1,
         val isLoading: Boolean = false,
         val hasError: Boolean = false

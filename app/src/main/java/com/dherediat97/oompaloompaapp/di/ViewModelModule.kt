@@ -10,6 +10,6 @@ import org.koin.dsl.module
  * View Models Module
  */
 val viewModelModule = module {
-    viewModel { OompaLoompaListViewModel(get()) }
+    single { OompaLoompaListViewModel(get()) }
     viewModel { OompaLoompaDetailViewModel(get()) }
 }

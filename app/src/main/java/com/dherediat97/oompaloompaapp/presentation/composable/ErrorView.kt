@@ -36,12 +36,12 @@ fun ErrorView(innerPadding: PaddingValues, retryAction: () -> Unit) {
             painter = painterResource(R.drawable.empty_state),
             contentDescription = "empty state chocolate",
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(
                     top = innerPadding.calculateTopPadding(),
                     end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
                     start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
                 )
+                .fillMaxWidth()
         )
         Text(
             stringResource(id = R.string.error_data),
