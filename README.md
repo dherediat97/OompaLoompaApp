@@ -33,6 +33,15 @@
   <img src="product_screenshot_filter.png" width="200"/>
 </p>
 
+### Plugins and libraries
+* Koin(for DI)
+* Coil(for optimization and caching image requests)
+* Retrofit(Highly need for API Requests)
+* OkHttp Interceptor(Only for debug the api response)
+* Converter GSON(for serialize the JSON response into object)
+* Lottie(for the animations, user friendly, better UX for the user)
+* Material Icons Extended(is the same of Material Icons but with more icons)
+* The rest of libraries are the Android core, Material Components and coroutines libraries
 
 ### Built With
 * ![Android][Android]
