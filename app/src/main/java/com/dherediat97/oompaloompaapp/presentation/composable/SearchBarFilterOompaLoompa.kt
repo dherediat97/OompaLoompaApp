@@ -74,14 +74,12 @@ fun SearchBarFilterOompaLoompa(
             query = query,
             onQueryChange = {
                 query = it
-                if (byProfession)
-                    oompaLoompaListViewModel.filterByProfession(query)
-                else if (byGender)
-                    oompaLoompaListViewModel.filterByGender(query)
-                else if (query.isNotEmpty())
-                    oompaLoompaListViewModel.filterByName(query)
-                else
-                    oompaLoompaListViewModel.fetchAllWorkers()
+                when {
+                    byProfession && !byGender -> oompaLoompaListViewModel.filterByProfession(query)
+                    byGender && !byProfession -> oompaLoompaListViewModel.filterByGender(query)
+//                    byProfession && byGender -> oompaLoompaListViewModel.filterByGenderAndProfession(query)
+                    query.isNotEmpty() -> oompaLoompaListViewModel.filterByName(query)
+                }
             },
             onSearch = {
                 active = false
@@ -123,7 +121,6 @@ fun SearchBarFilterOompaLoompa(
                 FilterChip(colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = if (byProfession) MaterialTheme.colorScheme.primary else Color.White
                 ), selected = byProfession, onClick = {
-                    byGender = false
                     byProfession = !byProfession
                 }, label = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -141,7 +138,6 @@ fun SearchBarFilterOompaLoompa(
                 FilterChip(colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = if (byGender) MaterialTheme.colorScheme.primary else Color.White
                 ), selected = byGender, onClick = {
-                    byProfession = false
                     byGender = !byGender
                 }, label = {
                     Row(

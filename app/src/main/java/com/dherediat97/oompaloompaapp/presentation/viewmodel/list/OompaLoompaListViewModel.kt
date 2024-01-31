@@ -1,7 +1,6 @@
 package com.dherediat97.oompaloompaapp.presentation.viewmodel.list
 
 import android.util.Log.e
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
@@ -34,12 +33,12 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
      * and return the response to the composable view
      */
     fun fetchAllWorkers() = viewModelScope.launch(Dispatchers.IO) {
+        _oompaLoompaUiState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
         runCatching {
-            _oompaLoompaUiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val responseGetAllOompaLoompa =
                 repository.fetchAllOompaLoompa(page = oompaLoompaUiState.value.page)
 
@@ -57,7 +56,8 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
             _oompaLoompaUiState.update {
                 it.copy(
                     oompaLoompaList = mutableListOf(),
-                    hasError = true
+                    hasError = true,
+                    isLoading = false
                 )
             }
         }
@@ -77,22 +77,33 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
                 isLoading = true
             )
         }
-        val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
 
-        //Filter using filter fun of profession parameter
-        val oompaLoompaListFiltered = oompaLoompaList.filter {
-            it.profession.contains(
-                professionSearched,
-                true
-            )
-        }
-        //Update State
-        _oompaLoompaUiState.update {
-            it.copy(
-                oompaLoompaListFiltered = oompaLoompaListFiltered
-                    .ifEmpty { oompaLoompaList }.distinct(),
-                isLoading = false
-            )
+        runCatching {
+            val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+
+            //Filter using filter fun of profession parameter
+            val oompaLoompaListFiltered = oompaLoompaList.filter {
+                it.profession.contains(
+                    professionSearched,
+                    true
+                )
+            }
+            //Update State
+            _oompaLoompaUiState.update {
+                it.copy(
+                    oompaLoompaListFiltered = oompaLoompaListFiltered
+                        .ifEmpty { oompaLoompaList }.distinct(),
+                    isLoading = false
+                )
+            }
+        }.onFailure {
+            _oompaLoompaUiState.update {
+                it.copy(
+                    oompaLoompaListFiltered = mutableListOf(),
+                    hasError = true,
+                    isLoading = false
+                )
+            }
         }
     }
 
@@ -106,21 +117,70 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
                 isLoading = true
             )
         }
-        val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+        runCatching {
 
-        //Filter using filter fun of gender enum value(female or male) parameter
-        val oompaLoompaListFiltered = oompaLoompaList.filter {
-            it.gender.value.lowercase() == genderSearched.lowercase()
-        }
-        //Update State
-        _oompaLoompaUiState.update {
-            it.copy(
-                oompaLoompaListFiltered = oompaLoompaListFiltered
-                    .ifEmpty { oompaLoompaList }.distinct(),
-                isLoading = false
-            )
+            val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+
+            //Filter using filter fun of gender enum value(female or male) parameter
+            val oompaLoompaListFiltered = oompaLoompaList.filter {
+                genderSearched.lowercase().startsWith(it.gender.value.lowercase())
+            }
+            //Update State
+            _oompaLoompaUiState.update {
+                it.copy(
+                    oompaLoompaListFiltered = oompaLoompaListFiltered
+                        .ifEmpty { oompaLoompaList }.distinct(),
+                    isLoading = false
+                )
+            }
+        }.onFailure {
+            _oompaLoompaUiState.update {
+                it.copy(
+                    oompaLoompaListFiltered = mutableListOf(),
+                    hasError = true,
+                    isLoading = false
+                )
+            }
         }
     }
+
+    fun filterByGenderAndProfession(query: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _oompaLoompaUiState.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+            val genderSearched = query.trim().split(":g:")
+            val professionSearched = query.trim().split(":p:")
+            println("gender= $genderSearched")
+            println("profession = $professionSearched")
+
+            if (genderSearched.isNotEmpty() && professionSearched.isNotEmpty()) {
+                //Filter using filter fun of gender enum value(female or male)
+                val oompaLoompaListFilteredByGender = oompaLoompaList.filter {
+                    it.gender.value.lowercase() == genderSearched[1].lowercase()
+                }
+
+                //Filter using filter fun of profession value
+                val oompaLoompaListFilteredByProfession = oompaLoompaList.filter {
+                    it.profession.contains(
+                        professionSearched[1],
+                        true
+                    )
+                }
+
+                //Update State
+                _oompaLoompaUiState.update {
+                    it.copy(
+                        oompaLoompaListFiltered = oompaLoompaListFilteredByGender + oompaLoompaListFilteredByProfession.distinct(),
+                        isLoading = false
+                    )
+                }
+
+            }
+        }
 
 
     /**
@@ -133,27 +193,38 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
                 isLoading = true
             )
         }
-        val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
 
-        //Filter using filter fun of first name parameter
-        val oompaLoompaListFilteredByName = oompaLoompaList.filter {
-            it.firstName.contains(nameSearched, true)
+        runCatching {
+            val oompaLoompaList = _oompaLoompaUiState.value.oompaLoompaList
+
+            //Filter using filter fun of first name parameter
+            val oompaLoompaListFilteredByName = oompaLoompaList.filter {
+                it.firstName.contains(nameSearched, true)
+            }
+
+            //Filter using filter fun of last name parameter
+            val oompaLoompaListFilteredByLastName = oompaLoompaList.filter {
+                it.lastName.contains(nameSearched, true)
+            }
+
+            //Update State
+            _oompaLoompaUiState.update {
+                it.copy(
+                    oompaLoompaListFiltered = oompaLoompaListFilteredByName + oompaLoompaListFilteredByLastName,
+                    isLoading = false
+                )
+            }
+        }.onFailure {
+            _oompaLoompaUiState.update {
+                it.copy(
+                    oompaLoompaListFiltered = mutableListOf(),
+                    hasError = true,
+                    isLoading = false
+                )
+            }
         }
 
-        //Filter using filter fun of last name parameter
-        val oompaLoompaListFilteredByLastName = oompaLoompaList.filter {
-            it.lastName.contains(nameSearched, true)
-        }
 
-        //Update State
-        _oompaLoompaUiState.update {
-            it.copy(
-                oompaLoompaListFiltered =
-                (oompaLoompaListFilteredByName + oompaLoompaListFilteredByLastName)
-                    .ifEmpty { oompaLoompaList }.distinct(),
-                isLoading = false
-            )
-        }
     }
 
     private fun resetOompaLoompaUiState() {
