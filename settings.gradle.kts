@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OompaLoompaApp"
 include(":app")
- 
+include(":benchmark")

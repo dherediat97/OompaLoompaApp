@@ -114,7 +114,7 @@ fun OompaLoompaDetail(
                     fontSize = 30.sp,
                     textAlign = TextAlign.Start,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
 

@@ -60,7 +60,9 @@ fun ErrorView(innerPadding: PaddingValues, retryAction: () -> Unit) {
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             ),
-            onClick = { retryAction() }
+            onClick = {
+                retryAction()
+            }
         ) {
             Text(text = "Retry")
         }

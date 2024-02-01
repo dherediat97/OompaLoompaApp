@@ -1,6 +1,7 @@
 package com.dherediat97.oompaloompaapp.presentation.theme
 
 import android.app.Activity
+import android.graphics.Color.toArgb
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -22,11 +23,11 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Blue,
+    primary = Primary,
     secondary = Secondary,
     tertiary = Tertiary,
-    primaryContainer = Blue,
-    onPrimaryContainer = White
+    primaryContainer = Primary,
+    onPrimaryContainer = White,
 )
 
 @Composable
@@ -42,9 +43,10 @@ fun OompaLoompaAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.navigationBarColor = Color.Transparent.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = darkTheme
         }
     }
 

@@ -18,6 +18,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFilter
@@ -59,22 +60,22 @@ fun OompaLoompaList(
             visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
         }
     }
-    if (data.hasError) {
+
+
+    if (!isConnected) {
         ErrorView(innerPadding) {
             oompaLoompaListViewModel.fetchAllWorkers()
         }
-    }
-    if (isConnected) {
+    } else {
         //Each time the user reach this screen
         LaunchedEffect(data.oompaLoompaList.isEmpty()) {
             oompaLoompaListViewModel.fetchAllWorkers()
         }
-
-        //Each time the user reach the bottom of the list, fetch results of the next page
-        LaunchedEffect(isAtBottom) {
-            delay(100)
-            oompaLoompaListViewModel.fetchAllWorkers(true)
-        }
+    }
+    //Each time the user reach the bottom of the list, fetch results of the next page
+    LaunchedEffect(isAtBottom) {
+        delay(50)
+        oompaLoompaListViewModel.fetchAllWorkers()
     }
 
     //When there are data build a list view
@@ -86,6 +87,7 @@ fun OompaLoompaList(
                 start = innerPadding.calculateStartPadding(LayoutDirection.Ltr)
             )
             .fillMaxWidth()
+            .testTag("oompaLoompaList")
             .padding(8.dp),
     ) {
         itemsIndexed(

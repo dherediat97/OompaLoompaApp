@@ -31,6 +31,11 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
         }
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -92,6 +97,10 @@ dependencies {
 
     //KOIN FOR COMPOSE
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+
+    //KOIN FOR TESTS
+    testImplementation("io.insert-koin:koin-test:3.5.3")
+    testImplementation("io.insert-koin:koin-test-junit4:3.5.3")
 
     //COIL COMPOSE
     implementation("io.coil-kt:coil-compose:2.5.0")
