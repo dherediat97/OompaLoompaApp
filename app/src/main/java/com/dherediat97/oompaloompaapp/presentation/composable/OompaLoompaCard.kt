@@ -13,8 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Diamond
+import androidx.compose.material.icons.filled.Factory
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Male
+import androidx.compose.material.icons.filled.MedicalServices
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -79,21 +84,24 @@ fun OompaLoompaCard(oompaLoompa: OompaLoompa) {
                         maxLines = 2,
                         fontSize = 18.sp,
                     )
-                    AssistChip(
-                        enabled = false,
-                        onClick = {},
-                        border = null,
-                        label = {
-                            Icon(
-                                painter = rememberVectorPainter(
-                                    if (oompaLoompa.gender == Gender.M) Icons.Default.Male else Icons.Default.Female
-                                ),
-                                contentDescription = "gender icon oompa loompa",
-                                modifier = Modifier.size(20.dp),
-                                tint= MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        })
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        AssistChip(
+                            enabled = false,
+                            onClick = {},
+                            border = null,
+                            label = {
+                                Icon(
+                                    painter = rememberVectorPainter(
+                                        if (oompaLoompa.gender == Gender.M) Icons.Default.Male else Icons.Default.Female
+                                    ),
+                                    contentDescription = "gender icon oompa loompa",
+                                    modifier = Modifier.size(24.dp),
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            })
+                    }
                 }
+
                 Text(
                     "Profession: ${oompaLoompa.profession}",
                     textAlign = TextAlign.Center,

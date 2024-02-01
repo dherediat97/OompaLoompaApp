@@ -3,8 +3,10 @@ package com.dherediat97.oompaloompaapp.presentation.composable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,17 +31,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
+import com.dherediat97.oompaloompaapp.R
 import com.dherediat97.oompaloompaapp.presentation.viewmodel.list.OompaLoompaListViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarFilterOompaLoompa(
+    innerPadding: PaddingValues,
     oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
     content: @Composable () -> Unit,
     onClearFilters: () -> Unit
@@ -60,6 +68,15 @@ fun SearchBarFilterOompaLoompa(
             .statusBarsPadding()
             .navigationBarsPadding()
             .semantics { isTraversalGroup = true }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .paint(
+                    painter = painterResource(id = R.drawable.wave_top),
+                    contentScale = ContentScale.FillHeight
+                )
+        )
         SearchBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -67,7 +84,7 @@ fun SearchBarFilterOompaLoompa(
                 .semantics { traversalIndex = -1f },
             query = query,
             colors = SearchBarDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.background,
+                containerColor = MaterialTheme.colorScheme.onTertiary,
             ),
             onQueryChange = {
                 query = it
@@ -82,7 +99,7 @@ fun SearchBarFilterOompaLoompa(
             onActiveChange = { active = it },
             placeholder = {
                 Text(
-                    "Search here...",
+                    stringResource(id = R.string.search_hint),
                     color = MaterialTheme.colorScheme.onBackground
                 )
             },
@@ -114,7 +131,7 @@ fun SearchBarFilterOompaLoompa(
             trailingIcon = {
                 if (data.isLoading)
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.background,
                         modifier = Modifier.size(26.dp)
                     )
             },
@@ -165,9 +182,12 @@ fun SearchBarFilterOompaLoompa(
                     textValue = "Both"
                 )
             }
-            content()
+            Row(modifier = Modifier.padding(top = 0.dp)) {
+                content()
+            }
         }
-        Row(modifier = Modifier.padding(top = 64.dp)) {
+        Row(modifier = Modifier
+            .padding(top = innerPadding.calculateTopPadding()+38.dp)) {
             content()
         }
     }

@@ -27,7 +27,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = Secondary,
     tertiary = Tertiary,
     primaryContainer = Primary,
-    onPrimaryContainer = White,
+    onPrimaryContainer = White
 )
 
 @Composable
@@ -43,10 +43,10 @@ fun OompaLoompaAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.navigationBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.primary.toArgb()
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = false
         }
     }
 
