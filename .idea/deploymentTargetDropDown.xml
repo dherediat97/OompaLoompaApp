@@ -8,6 +8,9 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="detailTestInvalid()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

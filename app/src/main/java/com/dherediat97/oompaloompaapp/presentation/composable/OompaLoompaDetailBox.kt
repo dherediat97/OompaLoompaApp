@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,7 +40,9 @@ fun OompaLoompaDetailBox(
                 image = oompaLoompaKey
             ),
             contentDescription = "oompa loompa icon",
-            modifier = Modifier.size(40.dp).padding(end = 10.dp),
+            modifier = Modifier
+                .size(40.dp)
+                .padding(end = 10.dp),
             tint = MaterialTheme.colorScheme.primary
         )
         Text(
@@ -49,7 +53,14 @@ fun OompaLoompaDetailBox(
         Text(
             oompaLoompaValue.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
             fontSize = 16.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier.testTag(
+                "oompaLoompa${
+                    oompaLoompaLabel.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase() else it.toString()
+                    }
+                }"
+            )
         )
     }
 }
