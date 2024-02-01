@@ -1,6 +1,7 @@
 package com.dherediat97.oompaloompaapp.presentation.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,10 +13,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Diamond
+import androidx.compose.material.icons.filled.Factory
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Male
+import androidx.compose.material.icons.filled.MedicalServices
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,11 +35,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.imageLoader
 import coil.request.ImageRequest
+import com.dherediat97.oompaloompaapp.OompaLoompaApp
 import com.dherediat97.oompaloompaapp.domain.dto.Gender
 import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
 import com.dherediat97.oompaloompaapp.presentation.theme.Black
+import org.koin.androidx.compose.get
+import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun OompaLoompaCard(oompaLoompa: OompaLoompa) {
@@ -70,16 +84,24 @@ fun OompaLoompaCard(oompaLoompa: OompaLoompa) {
                         maxLines = 2,
                         fontSize = 18.sp,
                     )
-                    AssistChip(onClick = {}, border = null, label = {
-                        Icon(
-                            painter = rememberVectorPainter(
-                                if (oompaLoompa.gender == Gender.M) Icons.Default.Male else Icons.Default.Female
-                            ),
-                            contentDescription = "gender icon oompa loompa",
-                            modifier = Modifier.size(20.dp)
-                        )
-                    })
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        AssistChip(
+                            enabled = false,
+                            onClick = {},
+                            border = null,
+                            label = {
+                                Icon(
+                                    painter = rememberVectorPainter(
+                                        if (oompaLoompa.gender == Gender.M) Icons.Default.Male else Icons.Default.Female
+                                    ),
+                                    contentDescription = "gender icon oompa loompa",
+                                    modifier = Modifier.size(24.dp),
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            })
+                    }
                 }
+
                 Text(
                     "Profession: ${oompaLoompa.profession}",
                     textAlign = TextAlign.Center,

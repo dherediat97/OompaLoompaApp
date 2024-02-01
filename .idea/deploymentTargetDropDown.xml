@@ -2,21 +2,14 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="TestsUnitCaseApp">
+        <State />
+      </entry>
       <entry key="app">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\dhere\.android\avd\Pixel_5_API_33.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-31T09:33:23.742977800Z" />
-        </State>
+        <State />
+      </entry>
+      <entry key="detailTestInvalid()">
+        <State />
       </entry>
     </value>
   </component>

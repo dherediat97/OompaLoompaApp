@@ -1,11 +1,12 @@
 package com.dherediat97.oompaloompaapp.presentation.composable
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,14 +18,12 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Transgender
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,19 +31,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
+import com.dherediat97.oompaloompaapp.R
 import com.dherediat97.oompaloompaapp.presentation.viewmodel.list.OompaLoompaListViewModel
 import org.koin.androidx.compose.koinViewModel
-import java.util.Locale.filter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarFilterOompaLoompa(
+    innerPadding: PaddingValues,
     oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
     content: @Composable () -> Unit,
     onClearFilters: () -> Unit
@@ -64,17 +68,30 @@ fun SearchBarFilterOompaLoompa(
             .fillMaxWidth()
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(top = 12.dp)
             .semantics { isTraversalGroup = true }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .paint(
+                    painter = painterResource(id = R.drawable.wave_top),
+                    contentScale = ContentScale.FillHeight
+                )
+        )
         SearchBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)
+                .testTag("searchBarFilter")
+                .semantics { contentDescription = "searchBarFilter" }
                 .semantics { traversalIndex = -1f },
             query = query,
+            colors = SearchBarDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.onTertiary,
+            ),
             onQueryChange = {
                 query = it
                 filterResults(byProfession, byGender, byName, query, oompaLoompaListViewModel)
-                if(query.isEmpty()) onClearFilters()
+                if (query.isEmpty()) onClearFilters()
             },
             onSearch = {
                 active = false
@@ -82,14 +99,24 @@ fun SearchBarFilterOompaLoompa(
             },
             active = active,
             onActiveChange = { active = it },
-            placeholder = { Text("Search here...", color = Color.White) },
+            placeholder = {
+                Text(
+                    stringResource(id = R.string.search_hint),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             leadingIcon = {
                 if (!active)
-                    Icon(Icons.Default.Search, contentDescription = "search icon")
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = "search icon",
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
                 else
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "delete search icon",
+                        tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.clickable {
                             if (query.isNotEmpty()) {
                                 query = ""
@@ -98,6 +125,7 @@ fun SearchBarFilterOompaLoompa(
                                 byProfession = false
                                 byGender = false
                                 byBoth = false
+                                byName = true
                                 onClearFilters()
                             }
                         })
@@ -105,7 +133,7 @@ fun SearchBarFilterOompaLoompa(
             trailingIcon = {
                 if (data.isLoading)
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.onTertiary,
                         modifier = Modifier.size(26.dp)
                     )
             },
@@ -116,87 +144,54 @@ fun SearchBarFilterOompaLoompa(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                FilterChip(colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = if (byProfession) MaterialTheme.colorScheme.primary else Color.White
-                ), selected = byProfession, onClick = {
-                    byGender = false
-                    byBoth = false
-                    byName = false
-                    byProfession = !byProfession
-                    query = ""
-                }, label = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = rememberVectorPainter(
-                                image = Icons.Default.Factory
-                            ),
-                            modifier = Modifier.padding(end = 4.dp),
-                            contentDescription = "oompa loompa profession filter icon",
-                            tint = if (!byProfession) MaterialTheme.colorScheme.primary else Color.White
-                        )
-                        Text("Profession")
-                    }
-                })
-                FilterChip(colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = if (byGender) MaterialTheme.colorScheme.primary else Color.White
-                ), selected = byGender, onClick = {
-                    byProfession = false
-                    byBoth = false
-                    byName = false
-                    byGender = !byGender
-                    query = ""
-                }, label = {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = rememberVectorPainter(
-                                image = Icons.Default.Transgender
-                            ),
-                            modifier = Modifier.padding(end = 4.dp),
-                            contentDescription = "oompa loompa gender filter icon",
-                            tint = if (!byGender) MaterialTheme.colorScheme.primary else Color.White
-                        )
-                        Text("Gender")
-                    }
-                })
-                FilterChip(colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = if (byBoth) MaterialTheme.colorScheme.primary else Color.White
-                ), selected = byBoth, onClick = {
-                    byBoth = !byBoth
-                    byName = false
-                    byGender = false
-                    byProfession = false
-                    query = ""
-                }, label = {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = rememberVectorPainter(
-                                image = Icons.Default.Transgender
-                            ),
-                            modifier = Modifier.padding(end = 4.dp),
-                            contentDescription = "oompa loompa gender filter icon",
-                            tint = if (!byBoth) MaterialTheme.colorScheme.primary else Color.White
-                        )
-                        Icon(
-                            painter = rememberVectorPainter(
-                                image = Icons.Default.Factory
-                            ),
-                            modifier = Modifier.padding(end = 4.dp),
-                            contentDescription = "oompa loompa profession filter icon",
-                            tint = if (!byBoth) MaterialTheme.colorScheme.primary else Color.White
-                        )
-                        Text("Both")
-                    }
-                })
+                CustomFilterChip(
+                    onClick = {
+                        byProfession = !byProfession
+                        byName = false
+                        byBoth = false
+                        byGender = false
+                        onClearFilters()
+                    },
+                    chipIcon = Icons.Filled.Factory,
+                    byCondition = byProfession,
+                    textValue = "Profession"
+                )
+
+                CustomFilterChip(
+                    onClick = {
+                        byGender = !byGender
+                        byName = false
+                        byBoth = false
+                        byProfession = false
+                        onClearFilters()
+                    },
+                    chipIcon = Icons.Filled.Transgender,
+                    byCondition = byGender,
+                    textValue = "Gender"
+                )
+
+                CustomFilterTwoChip(
+                    onClick = {
+                        byBoth = !byBoth
+                        byName = false
+                        byGender = false
+                        byProfession = false
+                        onClearFilters()
+                    },
+                    chipIcon = Icons.Filled.Transgender,
+                    secondaryChipIcon = Icons.Filled.Factory,
+                    byCondition = byBoth,
+                    textValue = "Both"
+                )
             }
-            content()
+            Row(modifier = Modifier.padding(top = 0.dp)) {
+                content()
+            }
         }
-        Row(modifier = Modifier.padding(top = 64.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(top = innerPadding.calculateTopPadding() + 38.dp)
+        ) {
             content()
         }
     }

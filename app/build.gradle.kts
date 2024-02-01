@@ -31,6 +31,11 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
         }
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -64,12 +69,13 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.2.0-rc01")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.01.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.0")
+    debugImplementation("androidx.test:core:1.5.0")
 
     //Compose Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
@@ -84,7 +90,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     //Retrofit Converter GSON
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    //OK HTTP Logging Interecptor(More info in the api requests)
+    //OK HTTP Logging Interceptor(More info in the api requests)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     //KOIN Android Core
@@ -92,6 +98,11 @@ dependencies {
 
     //KOIN FOR COMPOSE
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+
+    //KOIN FOR TESTS
+    androidTestImplementation("io.insert-koin:koin-test:3.5.3")
+    androidTestImplementation("io.insert-koin:koin-test-jvm:3.5.3")
+    androidTestImplementation("io.insert-koin:koin-test-junit4:3.5.3")
 
     //COIL COMPOSE
     implementation("io.coil-kt:coil-compose:2.5.0")

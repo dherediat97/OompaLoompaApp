@@ -2,4 +2,5 @@
     <string name="app_name">OompaLoompa</string>
     <string name="error_data">There has been an error finding the Oompa Loompa</string>
     <string name="retry">Retry</string>
+    <string name="search_hint">Search Oompa Loompa here…</string>
 </resources>

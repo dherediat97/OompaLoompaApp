@@ -1,6 +1,7 @@
 package com.dherediat97.oompaloompaapp.presentation.composable
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -32,13 +34,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dherediat97.oompaloompaapp.R
 import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
 import com.dherediat97.oompaloompaapp.domain.dto.Gender
 import com.dherediat97.oompaloompaapp.presentation.base.connectivityState
@@ -89,7 +95,8 @@ fun OompaLoompaDetail(
                     end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
                     start = innerPadding.calculateStartPadding(LayoutDirection.Ltr)
                 )
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 modifier = Modifier
@@ -110,18 +117,19 @@ fun OompaLoompaDetail(
                     "${oompaLoompa.firstName} ${oompaLoompa.lastName}",
                     modifier = Modifier
                         .padding(start = 12.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .testTag("oompaLoompaName"),
                     fontSize = 30.sp,
                     textAlign = TextAlign.Start,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
 
             Column(
                 modifier = Modifier
+                    .fillMaxSize(0.80f)
                     .verticalScroll(rememberScrollState())
-                    .weight(1f, fill = false)
             ) {
                 OompaLoompaDetailBox(
                     if (oompaLoompa.gender == Gender.M) Icons.Default.Male else Icons.Default.Female,
@@ -159,6 +167,21 @@ fun OompaLoompaDetail(
                     oompaLoompa.profession
                 )
             }
+            Row(
+                modifier = Modifier
+                    .weight(1f, false),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(90.dp)
+                        .paint(
+                            painter = painterResource(id = R.drawable.wave_bottom),
+                            contentScale = ContentScale.FillBounds
+                        )
+                )
+            }
+
         }
     }
 }

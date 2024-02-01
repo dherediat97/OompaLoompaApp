@@ -3,6 +3,7 @@ package com.dherediat97.oompaloompaapp.presentation.viewmodel.list
 import android.util.Log.e
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dherediat97.oompaloompaapp.domain.dto.ConnectionState
 import com.dherediat97.oompaloompaapp.domain.dto.OompaLoompa
 import com.dherediat97.oompaloompaapp.domain.repository.OompaLoompaListRepository
 import kotlinx.coroutines.Dispatchers
@@ -37,21 +38,20 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
      * Fetch all Oompa loompa controlling the errors
      * and return the response to the composable view
      */
-    fun fetchAllWorkers(loadNextPage: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
-        if (_oompaLoompaUiState.value.oompaLoompaList.isNotEmpty()) return@launch
+    fun fetchAllWorkers() =
+        viewModelScope.launch(Dispatchers.IO) {
 
-        _oompaLoompaUiState.update {
-            it.copy(
-                isLoading = true
-            )
-        }
-        runCatching {
-            val responseGetAllOompaLoompa =
-                repository.fetchAllOompaLoompa(page = _oompaLoompaUiState.value.page)
+            _oompaLoompaUiState.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            runCatching {
+                val responseGetAllOompaLoompa =
+                    repository.fetchAllOompaLoompa(page = _oompaLoompaUiState.value.page)
 
-            if (responseGetAllOompaLoompa.results.isNotEmpty()) {
-                val oompaLoompaList = responseGetAllOompaLoompa.results
-                if (loadNextPage) {
+                if (responseGetAllOompaLoompa.results.isNotEmpty()) {
+                    val oompaLoompaList = responseGetAllOompaLoompa.results
                     _oompaLoompaUiState.update {
                         it.copy(
                             page = _oompaLoompaUiState.value.page,
@@ -59,31 +59,21 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
                         )
                     }
                     _oompaLoompaUiState.value.page++
-                } else {
-                    _oompaLoompaUiState.update {
-                        it.copy(
-                            page = 1,
-                            oompaLoompaList = oompaLoompaList
-                        )
-                    }
+                }
+
+            }.onFailure {
+                _oompaLoompaUiState.update {
+                    it.copy(
+                        hasError = true
+                    )
                 }
             }
-
-        }.onFailure { error ->
-            e("fetchAllWorkers", "onFailure", error)
             _oompaLoompaUiState.update {
                 it.copy(
-                    hasError = true,
                     isLoading = false
                 )
             }
         }
-        _oompaLoompaUiState.update {
-            it.copy(
-                isLoading = false
-            )
-        }
-    }
 
     /**
      * Filter by profession if not have result, return original list
@@ -272,8 +262,7 @@ class OompaLoompaListViewModel(private val repository: OompaLoompaListRepository
             )
         }
         runCatching {
-            val responseGetAllOompaLoompa =
-                repository.fetchAllOompaLoompa(page = _oompaLoompaUiState.value.page)
+            val responseGetAllOompaLoompa = repository.fetchAllOompaLoompa(page = 1)
 
             if (responseGetAllOompaLoompa.results.isNotEmpty()) {
                 val oompaLoompaList = responseGetAllOompaLoompa.results
