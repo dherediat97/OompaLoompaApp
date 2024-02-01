@@ -22,6 +22,7 @@
 
         <activity
             android:name=".presentation.MainActivity"
+            android:launchMode="singleInstance"
             android:exported="true"
             android:theme="@style/Theme.OompaLoompaApp">
             <intent-filter>
