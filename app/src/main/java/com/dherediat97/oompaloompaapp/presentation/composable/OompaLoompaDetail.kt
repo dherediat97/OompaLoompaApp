@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -116,7 +117,8 @@ fun OompaLoompaDetail(
                     "${oompaLoompa.firstName} ${oompaLoompa.lastName}",
                     modifier = Modifier
                         .padding(start = 12.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .testTag("oompaLoompaName"),
                     fontSize = 30.sp,
                     textAlign = TextAlign.Start,
                     fontWeight = FontWeight.Bold,

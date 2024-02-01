@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
@@ -81,6 +82,7 @@ fun SearchBarFilterOompaLoompa(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .testTag("searchBarFilter")
+                .semantics { contentDescription = "searchBarFilter" }
                 .semantics { traversalIndex = -1f },
             query = query,
             colors = SearchBarDefaults.colors(
@@ -131,7 +133,7 @@ fun SearchBarFilterOompaLoompa(
             trailingIcon = {
                 if (data.isLoading)
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.background,
+                        color = MaterialTheme.colorScheme.onTertiary,
                         modifier = Modifier.size(26.dp)
                     )
             },
@@ -186,8 +188,10 @@ fun SearchBarFilterOompaLoompa(
                 content()
             }
         }
-        Row(modifier = Modifier
-            .padding(top = innerPadding.calculateTopPadding()+38.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(top = innerPadding.calculateTopPadding() + 38.dp)
+        ) {
             content()
         }
     }

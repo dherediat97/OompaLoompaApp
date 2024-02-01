@@ -90,7 +90,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     //Retrofit Converter GSON
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    //OK HTTP Logging Interecptor(More info in the api requests)
+    //OK HTTP Logging Interceptor(More info in the api requests)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     //KOIN Android Core
@@ -100,8 +100,9 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
 
     //KOIN FOR TESTS
-    testImplementation("io.insert-koin:koin-test:3.5.3")
-    testImplementation("io.insert-koin:koin-test-junit4:3.5.3")
+    androidTestImplementation("io.insert-koin:koin-test:3.5.3")
+    androidTestImplementation("io.insert-koin:koin-test-jvm:3.5.3")
+    androidTestImplementation("io.insert-koin:koin-test-junit4:3.5.3")
 
     //COIL COMPOSE
     implementation("io.coil-kt:coil-compose:2.5.0")

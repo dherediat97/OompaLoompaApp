@@ -5,13 +5,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieClipSpec
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dherediat97.oompaloompaapp.R
-import kotlinx.coroutines.delay
 
 
 @Composable
@@ -23,11 +21,10 @@ fun SplashView(modifier: Modifier, isAnimationFinished: () -> Unit) {
     val loadingComposition by animateLottieCompositionAsState(
         composition,
         iterations = LottieConstants.IterateForever,
-        speed = 2.5F
+        speed = 3F
     )
 
-    LaunchedEffect(Unit) {
-        delay(2400)
+    LaunchedEffect(loadingComposition==1F) {
         isAnimationFinished()
     }
 
