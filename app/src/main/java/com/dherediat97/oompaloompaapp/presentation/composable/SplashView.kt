@@ -10,6 +10,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dherediat97.oompaloompaapp.R
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -24,7 +25,8 @@ fun SplashView(modifier: Modifier, isAnimationFinished: () -> Unit) {
         speed = 3F
     )
 
-    LaunchedEffect(loadingComposition==1F) {
+    LaunchedEffect(loadingComposition == 1F) {
+        delay(1000)
         isAnimationFinished()
     }
 

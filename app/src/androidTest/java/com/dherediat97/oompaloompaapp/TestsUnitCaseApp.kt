@@ -10,7 +10,6 @@ import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertValueEquals
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChildAt
@@ -96,10 +95,10 @@ class TestsUnitCaseApp : KoinTest {
                     SearchBarFilterOompaLoompa(
                         onClearFilters = {},
                         innerPadding = paddingValues,
-                        content = {
+                        dataListView = {
                             OompaLoompaList(
-                                innerPadding = paddingValues,
-                                onNavigateOompaLoompa = {})
+                                innerPadding = paddingValues
+                            ) {}
                         })
                 }
             }
@@ -187,9 +186,9 @@ class TestsUnitCaseApp : KoinTest {
                 Scaffold { paddingValues ->
                     SearchBarFilterOompaLoompa(onClearFilters = {},
                         innerPadding = paddingValues,
-                        content = {
-                            OompaLoompaList(innerPadding = paddingValues,
-                                onNavigateOompaLoompa = {})
+                        dataListView = {
+                            OompaLoompaList(innerPadding = paddingValues
+                            ) {}
                         })
                 }
             }

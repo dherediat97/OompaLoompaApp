@@ -68,10 +68,12 @@ fun MyNavHost(oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel
             },
         ) {
             Scaffold { innerPadding ->
-                SearchBarFilterOompaLoompa(innerPadding,onClearFilters = {
+                SearchBarFilterOompaLoompa(innerPadding, onClearFilters = {
                     oompaLoompaListViewModel.resetOompaLoompaUiState()
-                }, content = {
-                    OompaLoompaList(innerPadding) { oompaLoompaId ->
+                }, dataListView = {
+                    OompaLoompaList(
+                        innerPadding = innerPadding
+                    ) { oompaLoompaId ->
                         navController.navigate("oompaLoompa/$oompaLoompaId")
                     }
                 })
