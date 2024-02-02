@@ -36,7 +36,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
@@ -50,10 +49,10 @@ import org.koin.androidx.compose.koinViewModel
 fun SearchBarFilterOompaLoompa(
     innerPadding: PaddingValues,
     oompaLoompaListViewModel: OompaLoompaListViewModel = koinViewModel(),
-    content: @Composable () -> Unit,
+    dataListView: @Composable () -> Unit,
     onClearFilters: () -> Unit
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
+    val query by oompaLoompaListViewModel.termSearched.collectAsState()
     var active by rememberSaveable { mutableStateOf(false) }
 
     var byName by rememberSaveable { mutableStateOf(true) }
@@ -82,20 +81,21 @@ fun SearchBarFilterOompaLoompa(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .testTag("searchBarFilter")
-                .semantics { contentDescription = "searchBarFilter" }
                 .semantics { traversalIndex = -1f },
             query = query,
             colors = SearchBarDefaults.colors(
                 containerColor = MaterialTheme.colorScheme.onTertiary,
             ),
             onQueryChange = {
-                query = it
-                filterResults(byProfession, byGender, byName, query, oompaLoompaListViewModel)
+                oompaLoompaListViewModel.onSearchTextChange(it)
+                filterResults(byProfession, byGender, byName, byBoth, oompaLoompaListViewModel)
                 if (query.isEmpty()) onClearFilters()
             },
             onSearch = {
                 active = false
-                filterResults(byProfession, byGender, byName, query, oompaLoompaListViewModel)
+                oompaLoompaListViewModel.onSearchTextChange(it)
+                filterResults(byProfession, byGender, byName, byBoth, oompaLoompaListViewModel)
+                if (query.isEmpty()) onClearFilters()
             },
             active = active,
             onActiveChange = { active = it },
@@ -119,7 +119,7 @@ fun SearchBarFilterOompaLoompa(
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.clickable {
                             if (query.isNotEmpty()) {
-                                query = ""
+                                oompaLoompaListViewModel.onSearchTextChange("")
                             } else {
                                 active = false
                                 byProfession = false
@@ -133,24 +133,18 @@ fun SearchBarFilterOompaLoompa(
             trailingIcon = {
                 if (data.isLoading)
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onTertiary,
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(24.dp)
                     )
             },
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(start = 12.dp, end = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            Row(modifier = Modifier.padding(start = 12.dp, end = 12.dp).fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween) {
                 CustomFilterChip(
                     onClick = {
                         byProfession = !byProfession
                         byName = false
                         byBoth = false
                         byGender = false
-                        onClearFilters()
                     },
                     chipIcon = Icons.Filled.Factory,
                     byCondition = byProfession,
@@ -163,7 +157,6 @@ fun SearchBarFilterOompaLoompa(
                         byName = false
                         byBoth = false
                         byProfession = false
-                        onClearFilters()
                     },
                     chipIcon = Icons.Filled.Transgender,
                     byCondition = byGender,
@@ -176,23 +169,19 @@ fun SearchBarFilterOompaLoompa(
                         byName = false
                         byGender = false
                         byProfession = false
-                        onClearFilters()
                     },
-                    chipIcon = Icons.Filled.Transgender,
-                    secondaryChipIcon = Icons.Filled.Factory,
+                    chipIcon = Icons.Filled.Factory,
+                    secondaryChipIcon = Icons.Filled.Transgender,
                     byCondition = byBoth,
                     textValue = "Both"
                 )
             }
             Row(modifier = Modifier.padding(top = 0.dp)) {
-                content()
+                dataListView()
             }
         }
-        Row(
-            modifier = Modifier
-                .padding(top = innerPadding.calculateTopPadding() + 38.dp)
-        ) {
-            content()
+        Row(modifier = Modifier.padding(top = innerPadding.calculateTopPadding() + 38.dp)) {
+            dataListView()
         }
     }
 }
@@ -201,12 +190,13 @@ fun filterResults(
     byProfession: Boolean,
     byGender: Boolean,
     byName: Boolean,
-    query: String,
+    byBoth: Boolean,
     oompaLoompaListViewModel: OompaLoompaListViewModel
 ) {
     when {
-        byProfession -> oompaLoompaListViewModel.filterByProfession(query)
-        byGender -> oompaLoompaListViewModel.filterByGender(query)
-        byName -> oompaLoompaListViewModel.filterByName(query)
+        byProfession -> oompaLoompaListViewModel.filterByProfession()
+        byGender -> oompaLoompaListViewModel.filterByGender()
+        byName -> oompaLoompaListViewModel.filterByName()
+        byBoth -> oompaLoompaListViewModel.filterByGenderAndProfession()
     }
 }
